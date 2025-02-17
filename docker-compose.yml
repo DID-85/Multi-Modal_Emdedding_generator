@@ -1,0 +1,54 @@
+services:
+  frontend:
+    container_name: frontend-container
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  backend1:
+    build: ./backend
+    container_name: backend1-container
+    restart: always
+    expose:
+      - "8000"
+    networks:
+      - app-network
+
+  backend2:
+    build: ./backend
+    container_name: backend2-container
+    restart: always
+    expose:
+      - "8000"
+    networks:
+      - app-network
+
+  backend3:
+    build: ./backend
+    container_name: backend3-container
+    restart: always
+    expose:
+      - "8000"
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-load-balancer
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/nginx/nginx.conf
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
